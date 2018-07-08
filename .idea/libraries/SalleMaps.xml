@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SalleMaps">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/SalleMaps.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

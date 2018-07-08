@@ -1,9 +1,11 @@
+import Network.WSGoogleMaps;
 import logica.Funcionalitat;
 import utils.Menu;
 
 public class Main {
     public static void main(String[] args) {
         Funcionalitat funcionalitat = new Funcionalitat();
+        WSGoogleMaps.getInstance().setApiKey("AIzaSyD3FSLnYCS3MxLg9MbWVVjOtxPmyhEG7OA");
 
         do {
             do {

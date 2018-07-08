@@ -9,6 +9,7 @@ import java.io.FileReader;
 public class GestorJSON {
     private static GestorJSON ourInstance = new GestorJSON();
     private static final String FILEPATH = "data" + System.getProperty("file.separator");
+    private JsonObject jO;
 
     public static GestorJSON getInstance() {
         return ourInstance;
@@ -30,7 +31,6 @@ public class GestorJSON {
                     Ciutat c = gson.fromJson(ciutats.get(i), Ciutat.class);
                     graf.addCity(c);
                 }
-                graf.inicialitzaConnexions();
                 JsonArray connexions = jsonObject.get("connections").getAsJsonArray();
                 for(int i = 0; i < connexions.size(); i++) {
                     Connexio c = gson.fromJson(connexions.get(i), Connexio.class);
@@ -42,5 +42,61 @@ public class GestorJSON {
             return null;
         }
         return graf;
+    }
+
+    public Boolean checkStatus(String s) {
+        JsonParser parser = new JsonParser();
+        jO = (JsonObject) parser.parse(s);
+        return jO.get("status").getAsString().equals("OK");
+    }
+
+    public int checkIfCity() {
+        JsonArray results = jO.get("results").getAsJsonArray();
+        for(int i = 0; i < results.size(); i++) {
+            JsonArray types = results.get(i).getAsJsonObject().get("types").getAsJsonArray();
+            for(int j = 0; j < types.size(); j++) {
+                if(types.get(j).getAsString().equals("locality")) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public Ciutat parseCity(int isCity) {
+        Ciutat ciutat = new Ciutat();
+
+        JsonObject city = jO.get("results").getAsJsonArray().get(isCity).getAsJsonObject();
+        JsonArray jsonArray = city.get("address_components").getAsJsonArray();
+        for(int i = 0; i < jsonArray.size(); i++) {
+            JsonArray types = jsonArray.get(i).getAsJsonObject().get("types").getAsJsonArray();
+            for(int j = 0; j < types.size(); j++) {
+                if(types.get(j).getAsString().equals("locality")) {
+                    ciutat.setName(jsonArray.get(i).getAsJsonObject().get("long_name").getAsString());
+                }
+                if(types.get(j).getAsString().equals("country")) {
+                    ciutat.setCountry(jsonArray.get(i).getAsJsonObject().get("short_name").getAsString());
+                }
+            }
+        }
+        ciutat.setAddress(city.get("formatted_address").getAsString());
+        JsonObject location = city.get("geometry").getAsJsonObject().get("location").getAsJsonObject();
+        ciutat.setLatitude(location.get("lat").getAsDouble());
+        ciutat.setLongitude(location.get("lng").getAsDouble());
+        return ciutat;
+    }
+
+    public long getDistance(String s, int i) {
+        JsonParser parser = new JsonParser();
+        jO = (JsonObject) parser.parse(s);
+        JsonArray jsonArray = jO.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray();
+        return jsonArray.get(i).getAsJsonObject().get("distance").getAsJsonObject().get("value").getAsLong();
+    }
+
+    public long getDuration(String s, int i) {
+        JsonParser parser = new JsonParser();
+        jO = (JsonObject) parser.parse(s);
+        JsonArray jsonArray = jO.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray();
+        return jsonArray.get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsLong();
     }
 }

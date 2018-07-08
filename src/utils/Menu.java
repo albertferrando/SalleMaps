@@ -39,15 +39,7 @@ public class Menu {
         System.out.println("Choose an option:");
         try{
             opcio = sc.nextInt();
-            if(opcio > MAX_OPCIO || opcio < MIN_OPCIO){
-                System.out.println();
-                System.out.println("Invalid option, try again:");
-                System.out.println();
-            }
         } catch(InputMismatchException e){
-            System.out.println();
-            System.out.println("Invalid option, try again:");
-            System.out.println();
             sc.next();
             opcio = 0;
         }
