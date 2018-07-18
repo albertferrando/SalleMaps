@@ -1,5 +1,6 @@
 package logica;
 
+import model.Ciutat;
 import utils.*;
 
 import java.util.InputMismatchException;
@@ -32,12 +33,14 @@ public class Funcionalitat {
                         System.out.println();
                         System.out.println("Indicate the city you want to search:");
                         String nomCiutat = sc.next();
-                        int i = graf.conte(nomCiutat);
+                        int i = Helper.getInstance().conte(graf, nomCiutat);
                         if(i != -1) {
-                            graf.toString(i);
+                            Ciutat c = (Ciutat) graf.getElement(i);
+                            c.toString(graf.getConnexions(i), graf.getElements());
                         } else {
-                            if(graf.addNewCity(nomCiutat)) {
-                                graf.toString(-1);
+                            if(Helper.getInstance().addNewCity(graf, nomCiutat)) {
+                                Ciutat c = (Ciutat) graf.getElement(graf.size() - 1);
+                                c.toString(graf.getConnexions(graf.size() - 1), graf.getElements());
                             }
                         }
                     }else {
@@ -52,12 +55,12 @@ public class Funcionalitat {
                         System.out.println("Indicate the source city: ");
                         String src = sc.nextLine();
                         String dest;
-                        if(graf.conte(src) != -1) {
+                        if(Helper.getInstance().conte(graf, src) != -1) {
                             valid = 1;
                             System.out.println();
                             System.out.println("Indicate the destination city: ");
                             dest = sc.nextLine();
-                            if(graf.conte(dest) != -1) {
+                            if(Helper.getInstance().conte(graf, dest) != -1) {
                                 valid = 2;
                                 System.out.println(System.getProperty("line.separator") + "1. Shortest route" +
                                         System.getProperty("line.separator") + "2. Fastest route" + System.getProperty("line.separator"));

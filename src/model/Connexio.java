@@ -7,17 +7,6 @@ public class Connexio {
     private long distance;
     //duracio en segons
     private long duration;
-    public static final Connexio elementIndefinit = elementIndefinit();
-
-    public boolean isElementIndefinit() {
-        return this.getDistance() == -1;
-    }
-
-    private static Connexio elementIndefinit() {
-        Connexio c = new Connexio();
-        c.setDistance(-1);
-        return c;
-    }
 
     public String getFrom() {
         return from;

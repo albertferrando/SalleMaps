@@ -58,7 +58,7 @@ public class Llista {
      * @param index Indica la posicio de l'element que volem recuperar.
      * @return Element de la posició index.
      */
-    Object recuperar(int index) {
+    public Object recuperar(int index) {
         Node aux = cap;
         if(index != -1) {
             for (int i = 0; i < index; i++) {
@@ -127,7 +127,7 @@ public class Llista {
      *
      * @return Quantitat de nodes de la llista.
      */
-    int mida() {
+    public int mida() {
         return numNodes;
     }
 

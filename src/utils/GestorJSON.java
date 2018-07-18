@@ -29,12 +29,13 @@ public class GestorJSON {
                 JsonArray ciutats = jsonObject.get("cities").getAsJsonArray();
                 for (int i = 0; i < ciutats.size(); i++) {
                     Ciutat c = gson.fromJson(ciutats.get(i), Ciutat.class);
-                    graf.addCity(c);
+                    graf.addNode(c);
                 }
                 JsonArray connexions = jsonObject.get("connections").getAsJsonArray();
                 for(int i = 0; i < connexions.size(); i++) {
                     Connexio c = gson.fromJson(connexions.get(i), Connexio.class);
-                    graf.addConnection(c);
+                    graf.addConnection(c, Helper.getInstance().conte(graf, c.getFrom()),
+                            Helper.getInstance().conte(graf, c.getTo()));
                 }
             }
         } catch (FileNotFoundException e) {

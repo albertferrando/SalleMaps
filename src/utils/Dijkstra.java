@@ -21,7 +21,7 @@ public class Dijkstra {
         D = new long[graf.size()];
         M = new long[graf.size()];
         P = new int[graf.size()];
-        src = graf.conte(source);
+        src = Helper.getInstance().conte(graf, source);
         for(int i = 0; i < graf.size(); i++) {
             restants.afegeix(i);
             D[i] = INF;
@@ -32,15 +32,19 @@ public class Dijkstra {
     }
 
     public void calculateRoute(String dest) {
-        this.dest = graf.conte(dest);
+        this.dest = Helper.getInstance().conte(graf, dest);
         if(opcio == 1) {
             while (!restants.buida()) {
                 int closest = getClosest();
                 System.out.println(closest);
                 for(int i = 0; i < graf.size(); i++) {
                     if(i != closest) {
-                        Connexio c = graf.getConnexio(closest, i);
-                        if (c != Connexio.elementIndefinit) {
+                        Object o = graf.getConnexio(closest, i);
+                        if(!Graf.isElementIndefinit(o)) {
+
+                        
+                        Connexio c = (Connexio) graf.getConnexio(closest, i);
+                        if (c != Graf.elementIndefinit) {
                             if (D[closest] + c.getDistance() < D[i]) {
                                 D[i] = D[closest] + c.getDistance();
                                 M[i] = M[closest] + c.getDuration();
@@ -72,8 +76,8 @@ public class Dijkstra {
                 int closest = getClosest();
                 for (int i = 0; i < graf.size(); i++) {
                     if (i != closest) {
-                        Connexio c = graf.getConnexio(closest, i);
-                        if (c != Connexio.elementIndefinit) {
+                        Connexio c = (Connexio) graf.getConnexio(closest, i);
+                        if (c != Graf.elementIndefinit) {
                             if (D[closest] + c.getDuration() < D[i]) {
                                 D[i] = D[closest] + c.getDuration();
                                 M[i] = M[closest] + c.getDistance();
