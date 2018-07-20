@@ -1,5 +1,8 @@
 package logica;
 
+import dataStructures.AVL;
+import dataStructures.Graf;
+import dataStructures.Hashtable;
 import model.Ciutat;
 import utils.*;
 
@@ -8,8 +11,12 @@ import java.util.Scanner;
 
 public class Funcionalitat {
     private Graf graf;
+    private AVL arbre;
+    private Hashtable hashtable;
 
     public void executaOpcio(int opcio) {
+        long timeStart = 0;
+        long aux = 0;
         Scanner sc = new Scanner(System.in);
         if(opcio != 4) {
             switch (opcio) {
@@ -21,26 +28,31 @@ public class Funcionalitat {
                     if(graf != null) {
                         Menu.getInstance().setMapLoaded(true);
                     }
-
-                    //TODO Carregar el mapa en un hash map.
-
-                    //TODO Carregar el mapa en un arbre.
-
+                    arbre = GestorJSON.getInstance().carregaArbre(nomFitxer);
+                    Helper.getInstance().setArbre(arbre);
                     break;
 
                 case 2:
                     if(Menu.getInstance().isMapLoaded()) {
+                        do {
+                            MenuOptimitzacio.getInstance().mostraMenu();
+                            MenuOptimitzacio.getInstance().demanaOpcio();
+                        } while (!MenuOptimitzacio.getInstance().opcioCorrecta());
+                        int optimization = MenuOptimitzacio.getInstance().getOpcio();
                         System.out.println();
                         System.out.println("Indicate the city you want to search:");
                         String nomCiutat = sc.next();
-                        int i = Helper.getInstance().conte(graf, nomCiutat);
+                        timeStart = System.nanoTime();
+                        int i = Helper.getInstance().searchCity(optimization, nomCiutat);
                         if(i != -1) {
-                            Ciutat c = (Ciutat) graf.getElement(i);
-                            c.toString(graf.getConnexions(i), graf.getElements());
+                            Ciutat c = (Ciutat) graf.recuperaNode(i);
+                            c.toString(graf.recuperaConnexions(i), graf.recuperaNodes());
                         } else {
-                            if(Helper.getInstance().addNewCity(graf, nomCiutat)) {
-                                Ciutat c = (Ciutat) graf.getElement(graf.size() - 1);
-                                c.toString(graf.getConnexions(graf.size() - 1), graf.getElements());
+                            if(Helper.getInstance().addNewCity(optimization, nomCiutat)) {
+                                arbre.insert(nomCiutat, graf.mida() - 1);
+                                //TODO insertar al hash
+                                Ciutat c = (Ciutat) graf.recuperaNode(graf.mida() - 1);
+                                c.toString(graf.recuperaConnexions(graf.mida() - 1), graf.recuperaNodes());
                             }
                         }
                     }else {
@@ -50,17 +62,26 @@ public class Funcionalitat {
 
                 case 3:
                     if(Menu.getInstance().isMapLoaded()) {
+                        do {
+                            MenuOptimitzacio.getInstance().mostraMenu();
+                            MenuOptimitzacio.getInstance().demanaOpcio();
+                        } while (!MenuOptimitzacio.getInstance().opcioCorrecta());
+                        int optimization = MenuOptimitzacio.getInstance().getOpcio();
                         int valid = 0;
                         System.out.println();
                         System.out.println("Indicate the source city: ");
                         String src = sc.nextLine();
-                        String dest;
-                        if(Helper.getInstance().conte(graf, src) != -1) {
+                        aux = System.nanoTime();
+                        int j = Helper.getInstance().searchCity(optimization, src);
+                        aux = System.nanoTime() - aux;
+                        if(j != -1) {
                             valid = 1;
                             System.out.println();
                             System.out.println("Indicate the destination city: ");
-                            dest = sc.nextLine();
-                            if(Helper.getInstance().conte(graf, dest) != -1) {
+                            String dest = sc.nextLine();
+                            timeStart = System.nanoTime();
+                            int i = Helper.getInstance().searchCity(optimization, dest);
+                            if(i != -1) {
                                 valid = 2;
                                 System.out.println(System.getProperty("line.separator") + "1. Shortest route" +
                                         System.getProperty("line.separator") + "2. Fastest route" + System.getProperty("line.separator"));
@@ -73,8 +94,8 @@ public class Funcionalitat {
                                             System.out.println("Invalid option, try again:");
                                             System.out.println();
                                         } else {
-                                            Dijkstra d = new Dijkstra(graf, src, opcio);
-                                            d.calculateRoute(dest);
+                                            Dijkstra d = new Dijkstra(graf, j, opcio);
+                                            d.calculateRoute(i);
                                         }
                                     } catch (InputMismatchException e) {
                                         System.out.println();
@@ -96,6 +117,11 @@ public class Funcionalitat {
                     }
                     break;
             }
+        }
+        if(opcio > 1) {
+            double timeFinal = System.nanoTime();
+            System.out.println();
+            System.out.println("Process time: " + (timeFinal + aux - timeStart) / 1000);
         }
     }
 }

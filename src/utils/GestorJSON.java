@@ -1,6 +1,8 @@
 package utils;
 
 import com.google.gson.*;
+import dataStructures.AVL;
+import dataStructures.Graf;
 import model.Ciutat;
 import model.Connexio;
 import java.io.FileNotFoundException;
@@ -20,6 +22,7 @@ public class GestorJSON {
 
     public Graf carregaGraf(String nomFitxer) {
         Graf graf = new Graf();
+        Helper.getInstance().setGraf(graf);
         try {
             Gson gson = new Gson();
             JsonParser parser = new JsonParser();
@@ -29,13 +32,13 @@ public class GestorJSON {
                 JsonArray ciutats = jsonObject.get("cities").getAsJsonArray();
                 for (int i = 0; i < ciutats.size(); i++) {
                     Ciutat c = gson.fromJson(ciutats.get(i), Ciutat.class);
-                    graf.addNode(c);
+                    graf.afegeixNode(c);
                 }
                 JsonArray connexions = jsonObject.get("connections").getAsJsonArray();
                 for(int i = 0; i < connexions.size(); i++) {
                     Connexio c = gson.fromJson(connexions.get(i), Connexio.class);
-                    graf.addConnection(c, Helper.getInstance().conte(graf, c.getFrom()),
-                            Helper.getInstance().conte(graf, c.getTo()));
+                    graf.afegeixConnexio(c, Helper.getInstance().conte(c.getFrom()),
+                            Helper.getInstance().conte(c.getTo()));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -43,6 +46,24 @@ public class GestorJSON {
             return null;
         }
         return graf;
+    }
+
+    public AVL carregaArbre(String nomFitxer) {
+        AVL arbre = new AVL();
+        try {
+            Gson gson = new Gson();
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement = parser.parse(new FileReader(FILEPATH + nomFitxer));
+            if (!jsonElement.toString().equals("null")) {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                JsonArray ciutats = jsonObject.get("cities").getAsJsonArray();
+                for (int i = 0; i < ciutats.size(); i++) {
+                    Ciutat c = gson.fromJson(ciutats.get(i), Ciutat.class);
+                    arbre.insert(c.getName(), i);
+                }
+            }
+        } catch (FileNotFoundException e) {}
+        return arbre;
     }
 
     public Boolean checkStatus(String s) {

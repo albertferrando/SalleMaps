@@ -2,10 +2,17 @@ package utils;
 
 import Network.HttpRequest;
 import Network.WSGoogleMaps;
+import dataStructures.AVL;
+import dataStructures.Graf;
+import dataStructures.Hashtable;
+import dataStructures.Llista;
 import model.Ciutat;
 import model.Connexio;
 
 public class Helper {
+    private Graf graf;
+    private AVL arbre;
+    private Hashtable hashtable;
     private static Helper ourInstance = new Helper();
 
     public static Helper getInstance() {
@@ -24,8 +31,8 @@ public class Helper {
         return new int[]{hours , mins , secs};
     }
 
-    private void connectCity(Graf graf) {
-        Llista nodes = graf.getElements();
+    private void connectCity() {
+        Llista nodes = graf.recuperaNodes();
         Connexio propera = new Connexio();
         Ciutat src = (Ciutat) nodes.recuperar(nodes.mida() - 1);
         double latitudes[] = new double[nodes.mida()];
@@ -35,7 +42,6 @@ public class Helper {
             latitudes[i] = ((Ciutat) nodes.recuperar(i)).getLatitude();
             longitudes[i] = ((Ciutat) nodes.recuperar(i)).getLongitude();
         }
-
         WSGoogleMaps.getInstance().distance(src.getLatitude(), src.getLongitude(), latitudes, longitudes,
                 new HttpRequest.HttpReply() {
                     @Override
@@ -53,11 +59,11 @@ public class Helper {
                         propera.setDuration(GestorJSON.getInstance().getDuration(s, quina));
                         propera.setFrom(src.getName());
                         propera.setTo(((Ciutat) nodes.recuperar(quina)).getName());
-                        graf.addConnection(propera, graf.size() - 1, quina);
+                        graf.afegeixConnexio(propera, graf.mida() - 1, quina);
                         String aux = propera.getFrom();
                         propera.setFrom(propera.getTo());
                         propera.setTo(aux);
-                        graf.addConnection(propera, quina, graf.size() - 1);
+                        graf.afegeixConnexio(propera, quina, graf.mida() - 1);
                     }
 
                     @Override
@@ -68,7 +74,7 @@ public class Helper {
                 });
     }
 
-    public boolean addNewCity(Graf graf, String nomCiutat) {
+    public boolean addNewCity(int optimization, String nomCiutat) {
         final Boolean[] addded = {false};
 
         WSGoogleMaps.getInstance().geolocate(nomCiutat, new HttpRequest.HttpReply() {
@@ -80,13 +86,13 @@ public class Helper {
                     isCity = GestorJSON.getInstance().checkIfCity();
                     if (isCity != -1) {
                         Ciutat c = GestorJSON.getInstance().parseCity(isCity);
-                        if(conte(graf, c.getName()) == -1) {
-                            graf.addNode(c);
+                        if(Helper.getInstance().searchCity(optimization, nomCiutat) == -1) {
+                            graf.afegeixNode(c);
                             System.out.println();
                             System.out.println("NEW CITY ADDED");
                             System.out.println();
                             addded[0] = true;
-                            connectCity(graf);
+                            connectCity();
                         } else {
                             System.out.println("The indicated city is already in the system.");
                             System.out.println();
@@ -109,13 +115,37 @@ public class Helper {
         return addded[0];
     }
 
-    public int conte(Graf graf, String c) {
-        for(int j = 0; j < graf.size(); j++) {
-            Ciutat ciutat = (Ciutat) graf.getElement(j);
+    public int conte(String c) {
+        for(int j = 0; j < graf.mida(); j++) {
+            Ciutat ciutat = (Ciutat) graf.recuperaNode(j);
             if(ciutat.getName().equals(c)) {
                 return j;
             }
         }
         return -1;
+    }
+
+    public int searchCity(int optimization, String nomCiutat) {
+        switch (optimization) {
+            case 1:
+                return conte(nomCiutat);
+            case 2:
+                return (int) arbre.getInfo(nomCiutat);
+            default:
+                return -1;
+                //TODO Fer getter del hashmap
+        }
+    }
+
+    public void setGraf(Graf graf) {
+        this.graf = graf;
+    }
+
+    public void setArbre(AVL arbre) {
+        this.arbre = arbre;
+    }
+
+    public void setHashtable(Hashtable hashtable) {
+        this.hashtable = hashtable;
     }
 }

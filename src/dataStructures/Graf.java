@@ -1,11 +1,11 @@
-package utils;
+package dataStructures;
 
 public class Graf {
     private Llista nodes;
     private Llista connexions;
     public static final Object elementIndefinit = elementIndefinit();
 
-    Graf() {
+    public Graf() {
         nodes = new Llista();
         connexions = new Llista();
     }
@@ -18,23 +18,23 @@ public class Graf {
         return o == elementIndefinit();
     }
 
-    public int size() {
+    public int mida() {
         return nodes.mida();
     }
 
-    public Object getElement(int i) {
+    public Object recuperaNode(int i) {
         return nodes.recuperar(i);
     }
 
-    public Llista getConnexions(int i) {
+    public Llista recuperaConnexions(int i) {
         return (Llista) connexions.recuperar(i);
     }
 
-    public Llista getElements() {
+    public Llista recuperaNodes() {
         return nodes;
     }
 
-    void addNode(Object c) {
+    public void afegeixNode(Object c) {
         for(int i = 0; i < nodes.mida(); i++) {
             Llista l = (Llista) connexions.recuperar(i);
             l.afegeix(elementIndefinit);
@@ -47,20 +47,11 @@ public class Graf {
         }
     }
 
-    public void addConnection(Object o, int i, int j) {
+    public void afegeixConnexio(Object o, int i, int j) {
         ((Llista)connexions.recuperar(i)).posarAlIndex(j, o);
     }
 
-    public int getIndex(Object o) {
-        for(int i = 0; i < nodes.mida(); i++) {
-            if(nodes.recuperar(i).equals(o)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Object getConnexio(int i, int j) {
+    public Object recuperaConnexio(int i, int j) {
         return ((Llista) connexions.recuperar(i)).recuperar(j);
     }
 }

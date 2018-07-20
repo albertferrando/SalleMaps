@@ -1,4 +1,4 @@
-package utils;
+package dataStructures;
 
 /**
  * Llista és una llista encadenada de tota la vida.
@@ -14,14 +14,14 @@ public class Llista {
     /**
      * Constructor sense paràmetres.
      */
-    Llista() {}
+    public Llista() {}
 
     /**
      * Afegeix un element al final de la llista.
      *
      * @param element Element a afegir.
      */
-    void afegeix(Object element) {
+    public void afegeix(Object element) {
         if(cap == null) {
             this.cap = new Node(element);
         } else {
@@ -77,7 +77,7 @@ public class Llista {
      *
      * @param element Element a eliminar.
      */
-    void elimina(Object element) {
+    public void elimina(Object element) {
         if(!this.buida()) {
             if(cap.element.equals(element)) {
                 cap = cap.seg;
@@ -109,7 +109,7 @@ public class Llista {
      * @param element L'element que volem saber si la llista conté o no.
      * @return Cert en cas que el contingui. Fals en el cas contrari.
      */
-    boolean conte(Object element) {
+    public boolean conte(Object element) {
         Node aux = cap;
         for(int i = 0; i < numNodes; i++){
             if(aux.element.equals(element)) {
