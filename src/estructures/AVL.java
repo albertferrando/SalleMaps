@@ -1,15 +1,10 @@
-package dataStructures;
+package estructures;
 
 public class AVL {
-
     private Node root;
-
-    //compareTo dóna positiu en cas que el paràmetre vagi abans alfabèticament. Per tant és a - b.
-
     private int height(Node N) {
         if (N == null)
             return 0;
-
         return N.height;
     }
 
@@ -17,43 +12,30 @@ public class AVL {
         return (a > b) ? a : b;
     }
 
-    // A utility function to right rotate subtree rooted with root
-    // See the diagram given above.
     private Node rightRotate(Node root) {
         Node x = root.left;
         Node T2 = x.right;
 
-        // Perform rotation
         x.right = root;
         root.left = T2;
 
-        // Update heights
         root.height = max(height(root.left), height(root.right)) + 1;
         x.height = max(height(x.left), height(x.right)) + 1;
-
-        // Return new root
         return x;
     }
 
-    // A utility function to left rotate subtree rooted with root
-    // See the diagram given above.
     private Node leftRotate(Node root) {
         Node y = root.right;
         Node T2 = y.left;
 
-        // Perform rotation
         y.left = root;
         root.right = T2;
-
-        //  Update heights
         root.height = max(height(root.left), height(root.right)) + 1;
         y.height = max(height(y.left), height(y.right)) + 1;
 
-        // Return new root
         return y;
     }
 
-    // Get Balance factor of node N
     private int getBalance(Node N) {
         if (N == null) {
             return 0;
@@ -81,17 +63,14 @@ public class AVL {
 
         int balance = getBalance(node);
 
-        //Left left
         if (balance > 1 && getBalance(node.left) > 0) {
             return rightRotate(node);
         }
 
-        //Right right
         if (balance < -1 && getBalance(node.right) < 0) {
             return leftRotate(node);
         }
 
-        //Right Left
         if (balance > 1 && getBalance(node.left) < 0) {
             node.left = leftRotate(node.left);
             return rightRotate(node);

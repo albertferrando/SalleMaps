@@ -1,8 +1,9 @@
 package utils;
 
 import com.google.gson.*;
-import dataStructures.AVL;
-import dataStructures.Graf;
+import estructures.AVL;
+import estructures.Graf;
+import estructures.taulaHash;
 import model.Ciutat;
 import model.Connexio;
 import java.io.FileNotFoundException;
@@ -12,6 +13,8 @@ public class GestorJSON {
     private static GestorJSON ourInstance = new GestorJSON();
     private static final String FILEPATH = "data" + System.getProperty("file.separator");
     private JsonObject jO;
+    private JsonArray cities;
+    private JsonArray connections;
 
     public static GestorJSON getInstance() {
         return ourInstance;
@@ -29,14 +32,14 @@ public class GestorJSON {
             JsonElement jsonElement = parser.parse(new FileReader(FILEPATH + nomFitxer));
             if(!jsonElement.toString().equals("null")) {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
-                JsonArray ciutats = jsonObject.get("cities").getAsJsonArray();
-                for (int i = 0; i < ciutats.size(); i++) {
-                    Ciutat c = gson.fromJson(ciutats.get(i), Ciutat.class);
+                cities = jsonObject.get("cities").getAsJsonArray();
+                for (int i = 0; i < cities.size(); i++) {
+                    Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
                     graf.afegeixNode(c);
                 }
-                JsonArray connexions = jsonObject.get("connections").getAsJsonArray();
-                for(int i = 0; i < connexions.size(); i++) {
-                    Connexio c = gson.fromJson(connexions.get(i), Connexio.class);
+                connections = jsonObject.get("connections").getAsJsonArray();
+                for(int i = 0; i < connections.size(); i++) {
+                    Connexio c = gson.fromJson(connections.get(i), Connexio.class);
                     graf.afegeixConnexio(c, Helper.getInstance().conte(c.getFrom()),
                             Helper.getInstance().conte(c.getTo()));
                 }
@@ -48,22 +51,25 @@ public class GestorJSON {
         return graf;
     }
 
-    public AVL carregaArbre(String nomFitxer) {
+    public AVL carregaArbre() {
         AVL arbre = new AVL();
-        try {
-            Gson gson = new Gson();
-            JsonParser parser = new JsonParser();
-            JsonElement jsonElement = parser.parse(new FileReader(FILEPATH + nomFitxer));
-            if (!jsonElement.toString().equals("null")) {
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                JsonArray ciutats = jsonObject.get("cities").getAsJsonArray();
-                for (int i = 0; i < ciutats.size(); i++) {
-                    Ciutat c = gson.fromJson(ciutats.get(i), Ciutat.class);
-                    arbre.insert(c.getName(), i);
-                }
-            }
-        } catch (FileNotFoundException e) {}
+        Gson gson = new Gson();
+        for (int i = 0; i < cities.size(); i++) {
+            Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
+            arbre.insert(c.getName(), i);
+        }
         return arbre;
+    }
+
+    public taulaHash carregaHashtable() {
+        //TODO Mida de la taula de hash.
+        taulaHash taulaHash = new taulaHash(cities.size());
+        Gson gson = new Gson();
+        for (int i = 0; i < cities.size(); i++) {
+            Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
+            taulaHash.put(c.getName(), i);
+        }
+        return taulaHash;
     }
 
     public Boolean checkStatus(String s) {

@@ -2,17 +2,17 @@ package utils;
 
 import Network.HttpRequest;
 import Network.WSGoogleMaps;
-import dataStructures.AVL;
-import dataStructures.Graf;
-import dataStructures.Hashtable;
-import dataStructures.Llista;
+import estructures.AVL;
+import estructures.Graf;
+import estructures.taulaHash;
+import estructures.Llista;
 import model.Ciutat;
 import model.Connexio;
 
 public class Helper {
     private Graf graf;
     private AVL arbre;
-    private Hashtable hashtable;
+    private taulaHash taulaHash;
     private static Helper ourInstance = new Helper();
 
     public static Helper getInstance() {
@@ -132,8 +132,7 @@ public class Helper {
             case 2:
                 return (int) arbre.getInfo(nomCiutat);
             default:
-                return -1;
-                //TODO Fer getter del hashmap
+                return (int) taulaHash.get(nomCiutat);
         }
     }
 
@@ -145,7 +144,7 @@ public class Helper {
         this.arbre = arbre;
     }
 
-    public void setHashtable(Hashtable hashtable) {
-        this.hashtable = hashtable;
+    public void setTaulaHash(taulaHash taulaHash) {
+        this.taulaHash = taulaHash;
     }
 }

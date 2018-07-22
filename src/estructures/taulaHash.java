@@ -1,13 +1,19 @@
-package dataStructures;
+package estructures;
 
-public class Hashtable {
+/**
+ *
+ */
+public class taulaHash {
     private final int PRIMERS[] = {3, 5, 7, 13, 17, 19, 23};
     private int TABLE_SIZE;
     Llista[] table;
 
-    public Hashtable(int size) {
+    public taulaHash(int size) {
         TABLE_SIZE = size;
         table = new Llista[TABLE_SIZE];
+        for(int i = 0; i < TABLE_SIZE; i++) {
+            table[i] = new Llista();
+        }
     }
 
     public int hashFunction(String key) {
@@ -18,33 +24,32 @@ public class Hashtable {
         return hash % TABLE_SIZE;
     }
 
-   /* public Object get(String key) {
+   public Object get(String key) {
         int hash = hashFunction(key);
-        while (table[hash] != null && ((Node)(table[hash].rec.getKey() != key)
-            hash = (hash + 1) % TABLE_SIZE;
-        if (table[hash] == null)
-            return -1;
-        else
-            return table[hash].getInfo();
+        for(int i = 0; i < table[hash].mida(); i++) {
+            Node n = (Node) table[hash].recuperar(i);
+            if(n.getKey().equals(key)) {
+                return n.getInfo();
+            }
+        }
+        return -1;
     }
 
     public void put(String key, Object info) {
         int hash = hashFunction(key);
-        while (table[hash] != null && table[hash].getKey() != key)
-            hash = (hash + 1) % TABLE_SIZE;
-        table[hash] = new Node(key, info);
-    }*/
+        table[hash].afegeix(new Node(key, info));
+    }
 
     class Node {
-        private int key;
+        private String key;
         private Object info;
 
-        Node(int key, Object info) {
+        Node(String key, Object info) {
             this.key = key;
             this.info = info;
         }
 
-        public int getKey() {
+        public String getKey() {
             return key;
         }
 

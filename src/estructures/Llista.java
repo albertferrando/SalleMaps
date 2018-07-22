@@ -1,4 +1,4 @@
-package dataStructures;
+package estructures;
 
 /**
  * Llista és una llista encadenada de tota la vida.

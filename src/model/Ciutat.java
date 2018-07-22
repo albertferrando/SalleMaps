@@ -1,8 +1,8 @@
 package model;
 
-import dataStructures.Graf;
+import estructures.Graf;
 import utils.Helper;
-import dataStructures.Llista;
+import estructures.Llista;
 
 public class Ciutat {
     private String name;

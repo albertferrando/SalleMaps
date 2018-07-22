@@ -1,8 +1,8 @@
 package logica;
 
-import dataStructures.AVL;
-import dataStructures.Graf;
-import dataStructures.Hashtable;
+import estructures.AVL;
+import estructures.Graf;
+import estructures.taulaHash;
 import model.Ciutat;
 import utils.*;
 
@@ -12,11 +12,11 @@ import java.util.Scanner;
 public class Funcionalitat {
     private Graf graf;
     private AVL arbre;
-    private Hashtable hashtable;
+    private taulaHash taulaHash;
 
     public void executaOpcio(int opcio) {
-        long timeStart = 0;
-        long aux = 0;
+        double timeStart = 0;
+        double aux = 0;
         Scanner sc = new Scanner(System.in);
         if(opcio != 4) {
             switch (opcio) {
@@ -28,8 +28,10 @@ public class Funcionalitat {
                     if(graf != null) {
                         Menu.getInstance().setMapLoaded(true);
                     }
-                    arbre = GestorJSON.getInstance().carregaArbre(nomFitxer);
+                    arbre = GestorJSON.getInstance().carregaArbre();
+                    taulaHash = GestorJSON.getInstance().carregaHashtable();
                     Helper.getInstance().setArbre(arbre);
+                    Helper.getInstance().setTaulaHash(taulaHash);
                     break;
 
                 case 2:
@@ -50,7 +52,7 @@ public class Funcionalitat {
                         } else {
                             if(Helper.getInstance().addNewCity(optimization, nomCiutat)) {
                                 arbre.insert(nomCiutat, graf.mida() - 1);
-                                //TODO insertar al hash
+                                taulaHash.put(nomCiutat, graf.mida() - 1);
                                 Ciutat c = (Ciutat) graf.recuperaNode(graf.mida() - 1);
                                 c.toString(graf.recuperaConnexions(graf.mida() - 1), graf.recuperaNodes());
                             }
@@ -121,7 +123,7 @@ public class Funcionalitat {
         if(opcio > 1) {
             double timeFinal = System.nanoTime();
             System.out.println();
-            System.out.println("Process time: " + (timeFinal + aux - timeStart) / 1000);
+            System.out.println("Process time: " + (timeFinal + aux - timeStart) / 1000000 + " milliseconds.");
         }
     }
 }

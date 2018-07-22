@@ -1,7 +1,7 @@
 package utils;
 
-import dataStructures.Graf;
-import dataStructures.Llista;
+import estructures.Graf;
+import estructures.Llista;
 import model.Ciutat;
 import model.Connexio;
 
