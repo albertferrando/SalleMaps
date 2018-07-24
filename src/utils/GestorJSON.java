@@ -3,7 +3,7 @@ package utils;
 import com.google.gson.*;
 import estructures.AVL;
 import estructures.Graf;
-import estructures.taulaHash;
+import estructures.TaulaHash;
 import model.Ciutat;
 import model.Connexio;
 import java.io.FileNotFoundException;
@@ -56,18 +56,18 @@ public class GestorJSON {
         Gson gson = new Gson();
         for (int i = 0; i < cities.size(); i++) {
             Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
-            arbre.insert(c.getName(), i);
+            arbre.afegeix(c.getName(), i);
         }
         return arbre;
     }
 
-    public taulaHash carregaHashtable() {
+    public TaulaHash carregaHashtable() {
         //TODO Mida de la taula de hash.
-        taulaHash taulaHash = new taulaHash(cities.size());
+        TaulaHash taulaHash = new TaulaHash(cities.size());
         Gson gson = new Gson();
         for (int i = 0; i < cities.size(); i++) {
             Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
-            taulaHash.put(c.getName(), i);
+            taulaHash.afegeix(c.getName(), i);
         }
         return taulaHash;
     }

@@ -2,7 +2,7 @@ package logica;
 
 import estructures.AVL;
 import estructures.Graf;
-import estructures.taulaHash;
+import estructures.TaulaHash;
 import model.Ciutat;
 import utils.*;
 
@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class Funcionalitat {
     private Graf graf;
     private AVL arbre;
-    private taulaHash taulaHash;
+    private TaulaHash taulaHash;
 
     public void executaOpcio(int opcio) {
         double timeStart = 0;
@@ -43,7 +43,7 @@ public class Funcionalitat {
                         int optimization = MenuOptimitzacio.getInstance().getOpcio();
                         System.out.println();
                         System.out.println("Indicate the city you want to search:");
-                        String nomCiutat = sc.next();
+                        String nomCiutat = sc.nextLine();
                         timeStart = System.nanoTime();
                         int i = Helper.getInstance().searchCity(optimization, nomCiutat);
                         if(i != -1) {
@@ -51,8 +51,8 @@ public class Funcionalitat {
                             c.toString(graf.recuperaConnexions(i), graf.recuperaNodes());
                         } else {
                             if(Helper.getInstance().addNewCity(optimization, nomCiutat)) {
-                                arbre.insert(nomCiutat, graf.mida() - 1);
-                                taulaHash.put(nomCiutat, graf.mida() - 1);
+                                arbre.afegeix(nomCiutat, graf.mida() - 1);
+                                taulaHash.afegeix(nomCiutat, graf.mida() - 1);
                                 Ciutat c = (Ciutat) graf.recuperaNode(graf.mida() - 1);
                                 c.toString(graf.recuperaConnexions(graf.mida() - 1), graf.recuperaNodes());
                             }

@@ -4,7 +4,7 @@ import Network.HttpRequest;
 import Network.WSGoogleMaps;
 import estructures.AVL;
 import estructures.Graf;
-import estructures.taulaHash;
+import estructures.TaulaHash;
 import estructures.Llista;
 import model.Ciutat;
 import model.Connexio;
@@ -12,7 +12,7 @@ import model.Connexio;
 public class Helper {
     private Graf graf;
     private AVL arbre;
-    private taulaHash taulaHash;
+    private TaulaHash taulaHash;
     private static Helper ourInstance = new Helper();
 
     public static Helper getInstance() {
@@ -130,9 +130,9 @@ public class Helper {
             case 1:
                 return conte(nomCiutat);
             case 2:
-                return (int) arbre.getInfo(nomCiutat);
+                return (int) arbre.recupera(nomCiutat);
             default:
-                return (int) taulaHash.get(nomCiutat);
+                return (int) taulaHash.recupera(nomCiutat);
         }
     }
 
@@ -144,7 +144,7 @@ public class Helper {
         this.arbre = arbre;
     }
 
-    public void setTaulaHash(taulaHash taulaHash) {
+    public void setTaulaHash(TaulaHash taulaHash) {
         this.taulaHash = taulaHash;
     }
 }

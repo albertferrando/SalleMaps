@@ -23,7 +23,7 @@ public class MenuOptimitzacio {
         System.out.println();
         System.out.println("1. Without optimization");
         System.out.println("2. Tree optimization");
-        System.out.println("3. taulaHash optimization");
+        System.out.println("3. TaulaHash optimization");
         System.out.println();
     }
 
