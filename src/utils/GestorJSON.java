@@ -62,8 +62,7 @@ public class GestorJSON {
     }
 
     public TaulaHash carregaHashtable() {
-        //TODO Mida de la taula de hash.
-        TaulaHash taulaHash = new TaulaHash(cities.size());
+        TaulaHash taulaHash = new TaulaHash(cities.size() * 75 / 100);
         Gson gson = new Gson();
         for (int i = 0; i < cities.size(); i++) {
             Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);

@@ -49,23 +49,23 @@ public class AVL {
 
         //Un cop actualitzada l'getAlcada cal mirar si l'arbre segueix equil·librat i realitzar les rotacions necessàries
         //per a que torni a estar-ho si es que no ho està.
-        int balance = factorEquilibri(node);
+        int factorEquilibri = factorEquilibri(node);
 
-        if (balance > 1 && factorEquilibri(node.esquerra) > 0) {
+        if (factorEquilibri > 1 && factorEquilibri(node.esquerra) > 0) {
             return rotacioLL(node);
         }
 
-        if (balance < -1 && factorEquilibri(node.dreta) < 0) {
+        if (factorEquilibri < -1 && factorEquilibri(node.dreta) < 0) {
             return rotacioRR(node);
         }
 
-        if (balance > 1 && factorEquilibri(node.esquerra) < 0) {
+        if (factorEquilibri > 1 && factorEquilibri(node.esquerra) < 0) {
             //Rotació LR
             node.esquerra = rotacioRR(node.esquerra);
             return rotacioLL(node);
         }
 
-        if (balance < -1 && factorEquilibri(node.dreta) > 0) {
+        if (factorEquilibri < -1 && factorEquilibri(node.dreta) > 0) {
             //Rotació RL
             node.dreta = rotacioLL(node.dreta);
             return rotacioRR(node);
@@ -130,28 +130,40 @@ public class AVL {
         }
     }
 
+    /**
+     * Mètode que s'encarrega de fer una rotació LL sobre el node rebut per paràmetre.
+     * 
+     * @param arrel Node sobre el qual farem la rotació.
+     * @return Retornem el subarbre amb la rotació feta.
+     */
     private Node rotacioLL(Node arrel) {
-        Node x = arrel.esquerra;
-        Node T2 = x.dreta;
+        Node esquerra = arrel.esquerra;
+        Node fill = esquerra.dreta;
 
-        x.dreta = arrel;
-        arrel.esquerra = T2;
+        esquerra.dreta = arrel;
+        arrel.esquerra = fill;
 
         arrel.alcada = max(getAlcada(arrel.esquerra), getAlcada(arrel.dreta)) + 1;
-        x.alcada = max(getAlcada(x.esquerra), getAlcada(x.dreta)) + 1;
-        return x;
+        esquerra.alcada = max(getAlcada(esquerra.esquerra), getAlcada(esquerra.dreta)) + 1;
+        return esquerra;
     }
 
+    /**
+     * Mètode que s'encarrega de fer una rotació RR sobre el node rebut per paràmetre.
+     *
+     * @param arrel Node sobre el qual farem la rotació.
+     * @return Retornem el subarbre amb la rotació feta.
+     */
     private Node rotacioRR(Node arrel) {
-        Node y = arrel.dreta;
-        Node T2 = y.esquerra;
+        Node dreta = arrel.dreta;
+        Node fill = dreta.esquerra;
 
-        y.esquerra = arrel;
-        arrel.dreta = T2;
+        dreta.esquerra = arrel;
+        arrel.dreta = fill;
+
         arrel.alcada = max(getAlcada(arrel.esquerra), getAlcada(arrel.dreta)) + 1;
-        y.alcada = max(getAlcada(y.esquerra), getAlcada(y.dreta)) + 1;
-
-        return y;
+        dreta.alcada = max(getAlcada(dreta.esquerra), getAlcada(dreta.dreta)) + 1;
+        return dreta;
     }
 
     /**
