@@ -23,52 +23,37 @@ public class GestorJSON {
     private GestorJSON() {
     }
 
-    public Graf carregaGraf(String nomFitxer) {
-        Graf graf = new Graf();
-        Helper.getInstance().setGraf(graf);
+    public void carregaEstructures(String nomFitxer) {
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement;
         try {
-            Gson gson = new Gson();
-            JsonParser parser = new JsonParser();
-            JsonElement jsonElement = parser.parse(new FileReader(FILEPATH + nomFitxer));
+            jsonElement = parser.parse(new FileReader(FILEPATH + nomFitxer));
             if(!jsonElement.toString().equals("null")) {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 cities = jsonObject.get("cities").getAsJsonArray();
-                for (int i = 0; i < cities.size(); i++) {
-                    Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
-                    graf.afegeixNode(c);
-                }
                 connections = jsonObject.get("connections").getAsJsonArray();
-                for(int i = 0; i < connections.size(); i++) {
-                    Connexio c = gson.fromJson(connections.get(i), Connexio.class);
-                    graf.afegeixConnexio(c, Helper.getInstance().conte(c.getFrom()),
-                            Helper.getInstance().conte(c.getTo()));
-                }
             }
-        } catch (FileNotFoundException e) {
+            Graf graf = new Graf();
+            AVL arbre = new AVL();
+            TaulaHash taulaHash = new TaulaHash(cities.size() * 75 / 100);
+            Helper.getInstance().setGraf(graf);
+            Helper.getInstance().setArbre(arbre);
+            Helper.getInstance().setTaulaHash(taulaHash);
+            Gson gson = new Gson();
+            for (int i = 0; i < cities.size(); i++) {
+                Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
+                graf.afegeixNode(c);
+                arbre.afegeix(c.getName(), i);
+                taulaHash.afegeix(c.getName(), i);
+            }
+            for(int i = 0; i < connections.size(); i++) {
+                Connexio c = gson.fromJson(connections.get(i), Connexio.class);
+                graf.afegeixConnexio(c, Helper.getInstance().searchCity(3, c.getFrom()));
+            }
+            Menu.getInstance().setMapLoaded(true);
+        } catch (FileNotFoundException e1) {
             System.out.println("Invalid name of json file. Make sure that the json file is in the data folder.");
-            return null;
         }
-        return graf;
-    }
-
-    public AVL carregaArbre() {
-        AVL arbre = new AVL();
-        Gson gson = new Gson();
-        for (int i = 0; i < cities.size(); i++) {
-            Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
-            arbre.afegeix(c.getName(), i);
-        }
-        return arbre;
-    }
-
-    public TaulaHash carregaHashtable() {
-        TaulaHash taulaHash = new TaulaHash(cities.size() * 75 / 100);
-        Gson gson = new Gson();
-        for (int i = 0; i < cities.size(); i++) {
-            Ciutat c = gson.fromJson(cities.get(i), Ciutat.class);
-            taulaHash.afegeix(c.getName(), i);
-        }
-        return taulaHash;
     }
 
     public Boolean checkStatus(String s) {

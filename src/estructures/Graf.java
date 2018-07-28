@@ -8,37 +8,13 @@ package estructures;
  * @version 1.0
  */
 public class Graf {
-    //Llista de nodes del graf.
     private Llista nodes;
-    //Llista de connexions del graf: Matriu cuadrada on la posició i, j indica la connexió entre el node i i el j.
-    private Llista connexions;
-    //Element indefinit que indicarà que no hi ha connexió entre dos nodes.
-    public static final Object elementIndefinit = elementIndefinit();
 
     /**
      * Constructor sense paràmetres.
      */
     public Graf() {
         nodes = new Llista();
-        connexions = new Llista();
-    }
-
-    /**
-     * Retorna l'element indefinit, en aquest cas -1.
-     * @return Element indefinit.
-     */
-    private static Object elementIndefinit() {
-        return -1;
-    }
-
-    /**
-     * Mètode que comprova si l'objecte passat per paràmetre és l'element indefinit.
-     *
-     * @param o Objecte que volem comprovar si és element indefinit.
-     * @return Cert en cas que si que ho sigui, fals en cas contrari.
-     */
-    public static boolean isElementIndefinit(Object o) {
-        return o.equals(elementIndefinit());
     }
 
     /**
@@ -51,13 +27,23 @@ public class Graf {
     }
 
     /**
+     * Retorna l'element en la posició i del graf. Sense les connexions.
+     *
+     * @param i Posició de la qual volem recuperar l'element.
+     * @return Element recuperat.
+     */
+    public Object recuperaElement(int i) {
+        return ((Node)nodes.recuperar(i)).getElement();
+    }
+
+    /**
      * Retorna el node en la posició i del graf.
      *
      * @param i Posició de la qual volem recuperar el node.
      * @return Node recuperat.
      */
-    public Object recuperaNode(int i) {
-        return nodes.recuperar(i);
+    public Node recuperaNode(int i) {
+        return (Node) nodes.recuperar(i);
     }
 
     /**
@@ -67,7 +53,7 @@ public class Graf {
      * @return Llista de connexions del node i.
      */
     public Llista recuperaConnexions(int i) {
-        return (Llista) connexions.recuperar(i);
+        return ((Node)nodes.recuperar(i)).getConnexions();
     }
 
     /**
@@ -80,43 +66,54 @@ public class Graf {
     }
 
     /**
-     * Afegeix un node al graf. Per a fer-ho, l'afegeix a la llista de nodes i amplia la mida de la matriu (que és quadrada)
-     * en 1. Inicialitza totes les connexions noves a elementIndefinit.
+     * Afegeix un node al graf. Simplement inicialitzem el node amb l'element que ens passin i creem la llista de connexions.
      *
-     * @param c Node a afegir.
+     * @param c Element del node a afegir.
      */
     public void afegeixNode(Object c) {
-        for(int i = 0; i < nodes.mida(); i++) {
-            Llista l = (Llista) connexions.recuperar(i);
-            l.afegeix(elementIndefinit);
-        }
-        nodes.afegeix(c);
-        connexions.afegeix(new Llista());
-        Llista l = (Llista) connexions.recuperar(nodes.mida());
-        for(int i = 0; i < nodes.mida(); i++) {
-            l.afegeix(elementIndefinit);
-        }
+        nodes.afegeix(new Node(c));
     }
 
     /**
-     * Afegeix una connexió entre el node i i el node j.
+     * Afegeix una connexió a la llista de connexions del node i.
      *
      * @param o Connexió a afegir.
      * @param i Posició node origen.
-     * @param j Posició node destí.
      */
-    public void afegeixConnexio(Object o, int i, int j) {
-        ((Llista)connexions.recuperar(i)).posarAlIndex(j, o);
+    public void afegeixConnexio(Object o, int i) {
+        ((Node)nodes.recuperar(i)).getConnexions().afegeix(o);
     }
 
     /**
-     * Recupera la connexió entre el node i i el j.
-     *
-     * @param i Posició node origen.
-     * @param j Posició node destí.
-     * @return Connexió entre i i j.
+     * Classe node del nostre graf. Cada Node estara comformat per un element i una llista de connexions.
      */
-    public Object recuperaConnexio(int i, int j) {
-        return ((Llista) connexions.recuperar(i)).recuperar(j);
+    public class Node {
+        Object element;
+        Llista connexions;
+
+        /**
+         * Constructor amb paràmetre.
+         * @param element Element amb el que volem inicialitzar el node.
+         */
+        Node(Object element) {
+            this.element = element;
+            connexions = new Llista();
+        }
+
+        /**
+         * Getter de l'element d'un node.
+         * @return Element del node.
+         */
+        public Object getElement() {
+            return element;
+        }
+
+        /**
+         * Getter de les connexions d'un node.
+         * @return Connexions del node.
+         */
+        public Llista getConnexions() {
+            return connexions;
+        }
     }
 }

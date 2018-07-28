@@ -59,11 +59,11 @@ public class Helper {
                         propera.setDuration(GestorJSON.getInstance().getDuration(s, quina));
                         propera.setFrom(src.getName());
                         propera.setTo(((Ciutat) nodes.recuperar(quina)).getName());
-                        graf.afegeixConnexio(propera, graf.mida() - 1, quina);
+                        graf.afegeixConnexio(propera, graf.mida() - 1);
                         String aux = propera.getFrom();
                         propera.setFrom(propera.getTo());
                         propera.setTo(aux);
-                        graf.afegeixConnexio(propera, quina, graf.mida() - 1);
+                        graf.afegeixConnexio(propera, quina);
                     }
 
                     @Override
@@ -117,7 +117,7 @@ public class Helper {
 
     public int conte(String c) {
         for(int j = 0; j < graf.mida(); j++) {
-            Ciutat ciutat = (Ciutat) graf.recuperaNode(j);
+            Ciutat ciutat = (Ciutat) graf.recuperaElement(j);
             if(ciutat.getName().equals(c)) {
                 return j;
             }
@@ -131,8 +131,11 @@ public class Helper {
                 return conte(nomCiutat);
             case 2:
                 return (int) arbre.recupera(nomCiutat);
-            default:
+            case 3:
                 return (int) taulaHash.recupera(nomCiutat);
+            default:
+                System.out.println("Fail");
+                return -1;
         }
     }
 
@@ -146,5 +149,42 @@ public class Helper {
 
     public void setTaulaHash(TaulaHash taulaHash) {
         this.taulaHash = taulaHash;
+    }
+
+    public Graf getGraf() {
+        return graf;
+    }
+
+    public AVL getArbre() {
+        return arbre;
+    }
+
+    public TaulaHash getTaulaHash() {
+        return taulaHash;
+    }
+
+    public void toString(int i, int optimitzation) {
+        Graf.Node node = graf.recuperaNode(i);
+        Ciutat c = ((Ciutat) node.getElement());
+        Llista connexions = node.getConnexions();
+        System.out.println("Name: " + c.getName());
+        System.out.println("Country: " + c.getCountry());
+        System.out.println("Latitude: " + c.getLatitude());
+        System.out.println("Longitude: " + c.getLongitude());
+        System.out.println();
+        System.out.println("Close cities: ");
+        for(int j = 0; j < connexions.mida(); j++) {
+            Connexio connexio = (Connexio) connexions.recuperar(j);
+            Ciutat city = (Ciutat) graf.recuperaElement(searchCity(optimitzation, connexio.getTo()));
+            System.out.println();
+            System.out.println("\tName: " + city.getName());
+            System.out.println("\tCountry: " + city.getCountry());
+            System.out.println("\tLatitude: " + city.getLatitude());
+            System.out.println("\tLongitude: " + city.getLongitude());
+            int[] time = Helper.getInstance().toTime(connexio.getDuration());
+            String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
+            System.out.println("\tTime: " + timeString);
+            System.out.println("\tDistance: " + connexio.getDistance()/1000);
+        }
     }
 }

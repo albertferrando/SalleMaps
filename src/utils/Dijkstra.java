@@ -15,10 +15,12 @@ public class Dijkstra {
     private int P[];
     private int src;
     private int dest;
+    private int opt;
 
-    public Dijkstra(Graf graf, int source, int opcio) {
+    public Dijkstra(Graf graf, int source, int opcio, int optimization) {
         this.graf = graf;
         this.opcio = opcio;
+        this.opt = optimization;
         restants = new Llista();
         D = new long[graf.mida()];
         M = new long[graf.mida()];
@@ -34,80 +36,57 @@ public class Dijkstra {
     }
 
     public void calculateRoute(int dest) {
+        double timeStart = System.nanoTime();
         this.dest = dest;
         if(opcio == 1) {
             while (!restants.buida()) {
                 int closest = getClosest();
-                for(int i = 0; i < graf.mida(); i++) {
-                    if(i != closest) {
-                        Object o = graf.recuperaConnexio(closest, i);
-                        if(!Graf.isElementIndefinit(o)) {
-                            Connexio c = (Connexio) graf.recuperaConnexio(closest, i);
-                            if (c != Graf.elementIndefinit) {
-                                if (D[closest] + c.getDistance() < D[i]) {
-                                    D[i] = D[closest] + c.getDistance();
-                                    M[i] = M[closest] + c.getDuration();
-                                    P[i] = closest;
-                                }
-                            }
-                        }
+                Llista connexions = graf.recuperaConnexions(closest);
+                for (int i = 0; i < connexions.mida(); i++) {
+                    Connexio c = (Connexio) connexions.recuperar(i);
+                    int to = Helper.getInstance().searchCity(opt, c.getTo());
+                    if (D[closest] + c.getDistance() < D[to]) {
+                        D[to] = D[closest] + c.getDuration();
+                        M[to] = M[closest] + c.getDistance();
+                        P[to] = closest;
                     }
                 }
             }
-            System.out.println();
-            System.out.println("Source: " + ((Ciutat) graf.recuperaNode(src)).getName());
-            System.out.println("Destination: " + ((Ciutat) graf.recuperaNode(this.dest)).getName());
-            System.out.println("Distance: " + D[this.dest]/1000);
-            int[] time = Helper.getInstance().toTime(M[this.dest]);
-            String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
-            System.out.println("Time: " + timeString);
-            System.out.println("Pathing: ");
-            StringBuilder pathString = new StringBuilder();
-            pathString.append(((Ciutat) graf.recuperaNode(this.dest)).getName());
-            int i = P[this.dest];
-            while(P[i] != -1){
-                pathString.insert(0, ((Ciutat) graf.recuperaNode(i)).getName() + "  ->  ");
-                i = P[i];
-            }
-            pathString.insert(0, ((Ciutat) graf.recuperaNode(i)).getName() + "  ->  ");
-            System.out.println("\t" + pathString);
         } else {
             while (!restants.buida()) {
                 int closest = getClosest();
-                for (int i = 0; i < graf.mida(); i++) {
-                    if (i != closest) {
-                        Object o = graf.recuperaConnexio(closest, i);
-                        if(!Graf.isElementIndefinit(o)) {
-                            Connexio c = (Connexio) graf.recuperaConnexio(closest, i);
-                            if (c != Graf.elementIndefinit) {
-                                if (D[closest] + c.getDuration() < D[i]) {
-                                    D[i] = D[closest] + c.getDuration();
-                                    M[i] = M[closest] + c.getDistance();
-                                    P[i] = closest;
-                                }
-                            }
-                        }
+                Llista connexions = graf.recuperaConnexions(closest);
+                for (int i = 0; i < connexions.mida(); i++) {
+                    Connexio c = (Connexio) connexions.recuperar(i);
+                    int to = Helper.getInstance().searchCity(opt, c.getTo());
+                    if (D[closest] + c.getDuration() < D[to]) {
+                        D[to] = D[closest] + c.getDuration();
+                        M[to] = M[closest] + c.getDistance();
+                        P[to] = closest;
                     }
                 }
             }
-            System.out.println();
-            System.out.println("Source: " + ((Ciutat) graf.recuperaNode(src)).getName());
-            System.out.println("Destination: " + ((Ciutat) graf.recuperaNode(this.dest)).getName());
-            System.out.println("Distance: " + M[this.dest]/1000);
-            int[] time = Helper.getInstance().toTime(D[this.dest]);
-            String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
-            System.out.println("Time: " + timeString);
-            System.out.println("Pathing: ");
-            StringBuilder pathString = new StringBuilder();
-            pathString.append(((Ciutat) graf.recuperaNode(this.dest)).getName());
-            int i = P[this.dest];
-            while(P[i] != -1){
-                pathString.insert(0, ((Ciutat) graf.recuperaNode(i)).getName() + "  ->  ");
-                i = P[i];
-            }
-            pathString.insert(0, ((Ciutat) graf.recuperaNode(i)).getName() + "  ->  ");
-            System.out.println("\t" + pathString);
         }
+        double timeFinal = System.nanoTime();
+        System.out.println();
+        System.out.println("Source: " + ((Ciutat) graf.recuperaElement(src)).getName());
+        System.out.println("Destination: " + ((Ciutat) graf.recuperaElement(this.dest)).getName());
+        System.out.println("Distance: " + M[this.dest]/1000);
+        int[] time = Helper.getInstance().toTime(D[this.dest]);
+        String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
+        System.out.println("Time: " + timeString);
+        System.out.println("Pathing: ");
+        StringBuilder pathString = new StringBuilder();
+        pathString.append(((Ciutat) graf.recuperaElement(this.dest)).getName());
+        int i = P[this.dest];
+        while(P[i] != -1){
+            pathString.insert(0, ((Ciutat) graf.recuperaElement(i)).getName() + "  ->  ");
+            i = P[i];
+        }
+        pathString.insert(0, ((Ciutat) graf.recuperaElement(i)).getName() + "  ->  ");
+        System.out.println("\t" + pathString);
+        System.out.println();
+        System.out.println("\tSearch time: " + (timeFinal - timeStart) / 1000000 + " milliseconds.");
     }
 
     private int getClosest() {
