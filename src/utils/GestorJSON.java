@@ -35,7 +35,7 @@ public class GestorJSON {
             }
             Graf graf = new Graf();
             AVL arbre = new AVL();
-            TaulaHash taulaHash = new TaulaHash(cities.size() * 75 / 100);
+            TaulaHash taulaHash = new TaulaHash(cities.size() * 60 / 100);
             Helper.getInstance().setGraf(graf);
             Helper.getInstance().setArbre(arbre);
             Helper.getInstance().setTaulaHash(taulaHash);

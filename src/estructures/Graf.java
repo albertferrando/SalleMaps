@@ -1,7 +1,7 @@
 package estructures;
 
 /**
- * Graf típic que conté una llista de nodes i una matriu de connexions.
+ * Graf típic que conté una llista de nodes amb les seves respectives connexions.
  *
  * @author albertferrando i BerniR4
  * @since 20/07/2018

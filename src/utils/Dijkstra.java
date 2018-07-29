@@ -22,8 +22,11 @@ public class Dijkstra {
         this.opcio = opcio;
         this.opt = optimization;
         restants = new Llista();
+        //A l'array D anirem acumulant la distància o el temps segons l'opció triada.
         D = new long[graf.mida()];
+        //A l'array M anirem acumulant l'altre que no estigui acumulant D.
         M = new long[graf.mida()];
+        //P indicarà el node previ per arribar al node de l'índex d'aquest.
         P = new int[graf.mida()];
         src = source;
         for(int i = 0; i < graf.mida(); i++) {
@@ -46,8 +49,8 @@ public class Dijkstra {
                     Connexio c = (Connexio) connexions.recuperar(i);
                     int to = Helper.getInstance().searchCity(opt, c.getTo());
                     if (D[closest] + c.getDistance() < D[to]) {
-                        D[to] = D[closest] + c.getDuration();
-                        M[to] = M[closest] + c.getDistance();
+                        D[to] = D[closest] + c.getDistance();
+                        M[to] = M[closest] + c.getDuration();
                         P[to] = closest;
                     }
                 }
@@ -71,10 +74,17 @@ public class Dijkstra {
         System.out.println();
         System.out.println("Source: " + ((Ciutat) graf.recuperaElement(src)).getName());
         System.out.println("Destination: " + ((Ciutat) graf.recuperaElement(this.dest)).getName());
-        System.out.println("Distance: " + M[this.dest]/1000);
-        int[] time = Helper.getInstance().toTime(D[this.dest]);
-        String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
-        System.out.println("Time: " + timeString);
+        if(opcio != 1) {
+            System.out.println("Distance: " + M[this.dest]/1000 + " km.");
+            int[] time = Helper.getInstance().toTime(D[this.dest]);
+            String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
+            System.out.println("Time: " + timeString);
+        } else {
+            System.out.println("Distance: " + D[this.dest]/1000 + " km.");
+            int[] time = Helper.getInstance().toTime(M[this.dest]);
+            String timeString = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
+            System.out.println("Time: " + timeString);
+        }
         System.out.println("Pathing: ");
         StringBuilder pathString = new StringBuilder();
         pathString.append(((Ciutat) graf.recuperaElement(this.dest)).getName());
@@ -99,6 +109,9 @@ public class Dijkstra {
                 closest = aux;
                 min = D[aux];
             }
+        }
+        if(min == INF) {
+            System.out.println("PASSA");
         }
         restants.elimina(closest);
         return closest;

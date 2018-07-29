@@ -22,7 +22,7 @@ public class Helper {
     private Helper() {
     }
 
-    public int[] toTime(long seconds) {
+    int[] toTime(long seconds) {
         int hours = (int) seconds / 3600;
         long remainder = seconds - hours * 3600;
         int mins = (int) (remainder / 60);
@@ -115,7 +115,7 @@ public class Helper {
         return addded[0];
     }
 
-    public int conte(String c) {
+    private int conte(String c) {
         for(int j = 0; j < graf.mida(); j++) {
             Ciutat ciutat = (Ciutat) graf.recuperaElement(j);
             if(ciutat.getName().equals(c)) {
@@ -139,15 +139,15 @@ public class Helper {
         }
     }
 
-    public void setGraf(Graf graf) {
+    void setGraf(Graf graf) {
         this.graf = graf;
     }
 
-    public void setArbre(AVL arbre) {
+    void setArbre(AVL arbre) {
         this.arbre = arbre;
     }
 
-    public void setTaulaHash(TaulaHash taulaHash) {
+    void setTaulaHash(TaulaHash taulaHash) {
         this.taulaHash = taulaHash;
     }
 

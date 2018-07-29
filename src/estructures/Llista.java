@@ -35,24 +35,6 @@ public class Llista {
     }
 
     /**
-     * Aquest mètode canvia l'element que es troba en la posició indicada per index.
-     *
-     * @param index Indica quin element volem modificar.
-     * @param element Element actualitzat que volem posar a la posicio index.
-     */
-    void posarAlIndex(int index, Object element) {
-        if(index != -1) {
-            Node aux = cap;
-            for (int i = 0; i < index; i++) {
-                aux = aux.seg;
-            }
-            aux.element = element;
-        } else {
-            System.out.println("Invalid index.");
-        }
-    }
-
-    /**
      * Getter de l'element en la posició indicada per index.
      *
      * @param index Indica la posicio de l'element que volem recuperar.
