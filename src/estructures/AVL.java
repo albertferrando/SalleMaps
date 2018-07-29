@@ -51,6 +51,9 @@ public class AVL {
         //per a que torni a estar-ho si es que no ho està.
         int factorEquilibri = factorEquilibri(node);
 
+        //Per saber la rotació a realitzar simplement mirem el factor d'equilibri del node actual i el factor d'equilibri
+        //del fill del costat pel qual està descompensat.
+
         if (factorEquilibri > 1 && factorEquilibri(node.esquerra) > 0) {
             return rotacioLL(node);
         }
@@ -191,7 +194,8 @@ public class AVL {
         String clau;
         Object valor;
         int alcada;
-        Node esquerra, dreta;
+        Node esquerra;
+        Node dreta;
 
         /**
          * Constructor amb paràmetres.

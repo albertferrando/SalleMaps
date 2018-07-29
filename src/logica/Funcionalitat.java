@@ -41,9 +41,10 @@ public class Funcionalitat {
                         double timeStart = System.nanoTime();
                         int i = Helper.getInstance().searchCity(optimization, nomCiutat);
                         if(i != -1) {
+                            double timeFinal = System.nanoTime();
                             Helper.getInstance().toString(i, optimization);
                             System.out.println();
-                            System.out.println("\tSearch time: " + (System.nanoTime() - timeStart) / 1000000 + " milliseconds.");
+                            System.out.println("\tSearch time: " + (timeFinal - timeStart) / 1000 + " microseconds.");
                         } else {
                             if(Helper.getInstance().addNewCity(optimization, nomCiutat)) {
                                 arbre.afegeix(nomCiutat, graf.mida() - 1);

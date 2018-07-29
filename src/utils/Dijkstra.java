@@ -5,6 +5,12 @@ import estructures.Llista;
 import model.Ciutat;
 import model.Connexio;
 
+/**
+ * Dijkstra típic. Restants son la llista de nodes per explorar.
+ * D és l'array que indica el cost actual per arribar el node (ja sigui temps o distancia).
+ * M és l'array que anirà acumulant el cost que no és el principal (per tant, si D acumula temps, M acumula distància i al reves.
+ * P és l'array que indica el node anterior.
+ */
 public class Dijkstra {
     private Graf graf;
     private int opcio;
@@ -17,6 +23,13 @@ public class Dijkstra {
     private int dest;
     private int opt;
 
+    /**
+     * Inicialitzem tot.
+     * @param graf El necessitarem per a recuperar les connexions.
+     * @param source Node source.
+     * @param opcio Opcio que ens diu si volem buscar shortest o fastest.
+     * @param optimization Opció que ens diu el tipus d'optimització.
+     */
     public Dijkstra(Graf graf, int source, int opcio, int optimization) {
         this.graf = graf;
         this.opcio = opcio;
@@ -41,13 +54,20 @@ public class Dijkstra {
     public void calculateRoute(int dest) {
         double timeStart = System.nanoTime();
         this.dest = dest;
+        //Segons opció mirarem la distància o el temps, però serà exactament igual el procés.
+
         if(opcio == 1) {
+            //Mentre quedin nodes per explorar.
             while (!restants.buida()) {
+                //Trobo quin node restant està més aprop i el recupero.
                 int closest = getClosest();
+                //Agafo les connexions del node triat.
                 Llista connexions = graf.recuperaConnexions(closest);
                 for (int i = 0; i < connexions.mida(); i++) {
+                    //Recupero la connexió i l'index del node desti.
                     Connexio c = (Connexio) connexions.recuperar(i);
                     int to = Helper.getInstance().searchCity(opt, c.getTo());
+                    //Si el nou camí es millor que el camí que ja existia l'actualitzem.
                     if (D[closest] + c.getDistance() < D[to]) {
                         D[to] = D[closest] + c.getDistance();
                         M[to] = M[closest] + c.getDuration();
@@ -96,7 +116,7 @@ public class Dijkstra {
         pathString.insert(0, ((Ciutat) graf.recuperaElement(i)).getName() + "  ->  ");
         System.out.println("\t" + pathString);
         System.out.println();
-        System.out.println("\tSearch time: " + (timeFinal - timeStart) / 1000000 + " milliseconds.");
+        System.out.println("\tSearch time: " + (timeFinal - timeStart) / 1000 + " microseconds.");
     }
 
     private int getClosest() {
@@ -109,9 +129,6 @@ public class Dijkstra {
                 closest = aux;
                 min = D[aux];
             }
-        }
-        if(min == INF) {
-            System.out.println("PASSA");
         }
         restants.elimina(closest);
         return closest;
